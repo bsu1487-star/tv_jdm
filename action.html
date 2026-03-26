@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JDM 비중 최적화 — 실무 Action Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F7F6F3;
+  --surface: #FFFFFF;
+  --surface-alt: #F0EFEB;
+  --surface-dark: #E8E6E1;
+  --ink: #1C1C1A;
+  --ink-2: #4A4A46;
+  --ink-3: #7A7A74;
+  --ink-4: #A8A8A2;
+  --rule: #D8D7D2;
+  --rule-strong: #B8B7B2;
+  --blue: #1565C0;
+  --blue-light: #E3F2FD;
+  --blue-text: #0D47A1;
+  --red: #C62828;
+  --red-light: #FFEBEE;
+  --red-text: #B71C1C;
+  --green: #2E7D32;
+  --green-light: #E8F5E9;
+  --green-text: #1B5E20;
+  --amber: #F57F17;
+  --amber-light: #FFF8E1;
+  --amber-text: #E65100;
+  --purple: #6A1B9A;
+  --purple-light: #F3E5F5;
+  --purple-text: #4A148C;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'Noto Sans KR', -apple-system, sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page { max-width: 1120px; margin: 0 auto; padding: 0 48px; }
+
+/* Header */
+.header {
+  padding: 48px 0 36px;
+  border-bottom: 3px solid var(--ink);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.header-left h1 {
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+.header-left .subtitle {
+  font-size: 14px;
+  color: var(--ink-3);
+  margin-top: 6px;
+}
+.header-right {
+  text-align: right;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  line-height: 1.8;
+}
+.header-right .ver {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 2px 10px;
+  border-radius: 3px;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+/* Phase Block */
+.phase {
+  margin: 40px 0 0;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.phase-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--surface);
+}
+.phase-badge {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  padding: 4px 14px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.phase-a .phase-badge { background: var(--blue-light); color: var(--blue-text); }
+.phase-b .phase-badge { background: var(--amber-light); color: var(--amber-text); }
+.phase-c .phase-badge { background: var(--purple-light); color: var(--purple-text); }
+.phase-d .phase-badge { background: var(--green-light); color: var(--green-text); }
+.phase-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  flex: 1;
+}
+.phase-header .phase-period {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  flex-shrink: 0;
+}
+.phase-body {
+  padding: 0;
+  background: var(--surface);
+}
+.phase-objective {
+  padding: 16px 28px;
+  background: var(--surface-alt);
+  font-size: 14px;
+  color: var(--ink-2);
+  border-bottom: 1px solid var(--rule);
+}
+.phase-objective strong { color: var(--ink); }
+
+/* Action Item */
+.ai-group {
+  border-bottom: 1px solid var(--rule);
+}
+.ai-group:last-child { border-bottom: none; }
+.ai-group-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 28px;
+  background: var(--surface-alt);
+  border-bottom: 1px solid var(--rule);
+  cursor: default;
+}
+.ai-group-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-3);
+  min-width: 48px;
+}
+.ai-group-header h3 {
+  font-size: 15px;
+  font-weight: 700;
+  flex: 1;
+}
+
+.ai-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.ai-table th {
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--surface);
+}
+.ai-table th:first-child { padding-left: 28px; }
+.ai-table td {
+  font-size: 13px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+  color: var(--ink-2);
+}
+.ai-table td:first-child { padding-left: 28px; }
+.ai-table tr:last-child td { border-bottom: none; }
+.ai-table tr:hover td { background: var(--surface-alt); }
+
+.ai-id {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+.ai-task { color: var(--ink); font-weight: 500; }
+.ai-detail {
+  font-size: 12px;
+  color: var(--ink-3);
+  margin-top: 3px;
+  font-weight: 400;
+}
+
+/* Owner pill */
+.owner {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 10px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+.owner.primary { background: var(--blue-light); color: var(--blue-text); }
+.owner.support { background: var(--surface-alt); color: var(--ink-3); border: 1px solid var(--rule); }
+
+/* Priority */
+.priority {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+.priority.p1 { background: var(--red-light); color: var(--red-text); }
+.priority.p2 { background: var(--amber-light); color: var(--amber-text); }
+.priority.p3 { background: var(--surface-alt); color: var(--ink-3); }
+
+/* Deliverable */
+.deliverable {
+  font-size: 12px;
+  padding: 6px 0;
+}
+.deliverable code {
+  font-family: var(--mono);
+  font-size: 11px;
+  background: var(--surface-alt);
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: var(--ink-2);
+  border: 1px solid var(--rule);
+}
+
+/* Dependency Warning */
+.dep-warn {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 28px;
+  background: var(--amber-light);
+  border-top: 1px solid #F9E79F;
+  font-size: 12.5px;
+  color: var(--amber-text);
+}
+.dep-warn .dw-icon { flex-shrink: 0; font-size: 14px; margin-top: 1px; }
+
+/* Checklist */
+.checklist {
+  padding: 16px 28px;
+  background: var(--surface);
+}
+.checklist h4 {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--ink-2);
+}
+.cl-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 6px 0;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.cl-box {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--rule-strong);
+  border-radius: 3px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Data Spec */
+.data-spec {
+  margin: 16px 28px 20px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.data-spec-header {
+  background: var(--surface-alt);
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.data-spec-header .ds-icon {
+  font-size: 14px;
+}
+.ds-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+.ds-table th {
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--surface);
+}
+.ds-table td {
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-2);
+  vertical-align: top;
+}
+.ds-table tr:last-child td { border-bottom: none; }
+.ds-table code {
+  font-family: var(--mono);
+  font-size: 11px;
+  background: var(--surface-alt);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--rule);
+}
+
+/* Section divider */
+.section-divider {
+  margin: 48px 0 0;
+  padding: 16px 0;
+  border-top: 3px solid var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.section-divider h2 {
+  font-size: 22px;
+  font-weight: 900;
+}
+.section-divider .sd-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--ink-3);
+}
+
+/* Summary Stats */
+.summary-bar {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin: 24px 0;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 16px 18px;
+  text-align: center;
+}
+.stat-card .stat-num {
+  font-family: var(--mono);
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1;
+}
+.stat-card .stat-label {
+  font-size: 11px;
+  color: var(--ink-3);
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+/* Risk Matrix */
+.risk-matrix {
+  margin: 16px 28px 20px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.rm-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+.rm-table th {
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--surface-alt);
+}
+.rm-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-2);
+  vertical-align: top;
+}
+.rm-table tr:last-child td { border-bottom: none; }
+.risk-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 3px;
+  letter-spacing: 0.5px;
+}
+.risk-tag.high { background: var(--red-light); color: var(--red-text); }
+.risk-tag.mid { background: var(--amber-light); color: var(--amber-text); }
+.risk-tag.low { background: var(--surface-alt); color: var(--ink-3); }
+
+/* Footer */
+.footer {
+  padding: 32px 0;
+  text-align: center;
+  font-size: 11px;
+  color: var(--ink-4);
+  border-top: 1px solid var(--rule);
+  margin-top: 48px;
+  font-family: var(--mono);
+  letter-spacing: 0.5px;
+}
+
+/* Note block */
+.note-block {
+  margin: 0 28px 16px;
+  padding: 14px 18px;
+  background: var(--blue-light);
+  border-radius: 6px;
+  border-left: 3px solid var(--blue);
+  font-size: 12.5px;
+  color: var(--blue-text);
+}
+.note-block strong { font-weight: 700; }
+
+@media print {
+  body { background: #fff; }
+  .page { max-width: none; padding: 0 20px; }
+  .phase { break-inside: avoid; }
+  .ai-table tr { break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <h1>JDM 비중 최적화 시뮬레이션<br>실무 Action Plan</h1>
+      <div class="subtitle">Phase별 Action Item · 담당자 · 산출물 · 기한 · 의존관계 정의</div>
+    </div>
+    <div class="header-right">
+      TV사업부<br>
+      2026.03<br>
+      <span class="ver">WORKING DOC</span>
+    </div>
+  </div>
+
+  <!-- SUMMARY STATS -->
+  <div class="summary-bar">
+    <div class="stat-card">
+      <div class="stat-num">4</div>
+      <div class="stat-label">Phase</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">32</div>
+      <div class="stat-label">Action Items</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">9</div>
+      <div class="stat-label">P1 (Critical)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">7</div>
+      <div class="stat-label">부서 협업 필요</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">6~10주</div>
+      <div class="stat-label">전체 소요 기간</div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PHASE A -->
+  <!-- ============================================================ -->
+  <div class="section-divider">
+    <div class="sd-tag">PHASE A</div>
+    <h2>Back-testing 및 프레임워크 구축</h2>
+  </div>
+
+  <div class="phase phase-a">
+    <div class="phase-header">
+      <span class="phase-badge">PHASE A</span>
+      <h2>현 보유 데이터 기반 모델 골격 구축</h2>
+      <span class="phase-period">1~2주 (즉시 착수 가능)</span>
+    </div>
+    <div class="phase-objective">
+      <strong>목표:</strong> 추가 데이터 없이 현재 원가 Raw Data만으로 TCO 모델의 프로토타입을 구축하고, 
+      과거 실적으로 Back-testing하여 모델 가정의 타당성을 사전 검증합니다. 동시에 Phase B에 필요한 데이터를 유관 부서에 정식 요청합니다.
+    </div>
+    <div class="phase-body">
+
+      <!-- A-1: Back-testing -->
+      <div class="ai-group">
+        <div class="ai-group-header">
+          <span class="ai-group-num">A-1</span>
+          <h3>과거 실적 Back-testing</h3>
+        </div>
+        <table class="ai-table">
+          <thead>
+            <tr>
+              <th style="width:7%">ID</th>
+              <th style="width:30%">Action Item</th>
+              <th style="width:16%">담당</th>
+              <th style="width:7%">우선순위</th>
+              <th style="width:22%">산출물</th>
+              <th style="width:18%">기한 / 비고</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="ai-id">A-1-1</span></td>
+              <td>
+                <div class="ai-task">Material Group 기준 JDM vs 자가 원가 비교</div>
+                <div class="ai-detail">동일 해상도/사이즈 제품의 자가생산 원가와 JDM 구매단가를 MG 기준으로 추출·비교. SKU별 단위당 절감액 범위 확인</div>
+              </td>
+              <td>
+                <span class="owner primary">원가분석 담당</span>
+              </td>
+              <td><span class="priority p1">P1</span></td>
+              <td>
+                <div class="deliverable"><code>backtest_cost_comparison.xlsx</code><br>SKU × 지역별 VC_자가 vs C_JDM 매핑 테이블</div>
+              </td>
+              <td>D+3일<br><span style="font-size:11px;color:var(--ink-3)">현 시스템 Raw Data에서 즉시 추출 가능</span></td>
+            </tr>
+            <tr>
+              <td><span class="ai-id">A-1-2</span></td>
+              <td>
+                <div class="ai-task">가동률 vs 단위당 고정비 회귀 분석</div>
+                <div class="ai-detail">과거 12~24개월 월별 데이터에서 공장 생산수량(proxy: 가동률)과 단위당 O/H+고정비+인건비의 관계를 선형/비선형 회귀. Penalty 함수 계수(a, b, c) 초기 추정</div>
+              </td>
+              <td>
+                <span class="owner primary">데이터분석 담당</span>
+              </td>
+              <td><span class="priority p1">P1</span></td>
+              <td>
+                <div class="deliverable"><code>utilization_regression.py</code><br>회귀 계수 + 산점도 + R² 리포트</div>
+              </td>
+              <td>D+5일<br><span style="font-size:11px;color:var(--ink-3)">Python pandas + statsmodels 사용</span></td>
+            </tr>
+            <tr>
+              <td><span class="ai-id">A-1-3</span></td>
+              <td>
+                <div class="ai-task">Back-testing 결과 요약 및 가정 보정</div>
+                <div class="ai-detail">A-1-1, A-1-2 결과를 종합하여 모델 가정(절감액 범위, Penalty 곡선 형태)의 타당성 판단. 괴리가 큰 항목 식별 및 보정 방향 정리</div>
+              </td>
+              <td>
+                <span class="owner primary">원가분석 담당</span>
+                <span class="owner support">데이터분석</span>
+              </td>
+              <td><span class="priority p2">P2</span></td>
+              <td>
+                <div class="deliverable"><code>backtest_summary.pptx</code><br>1~2장 요약 슬라이드</div>
+              </td>
+              <td>D+7일</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- A-2: TCO Prototype -->
+      <div class="ai-group">
+        <div class="ai-group-header">
+          <span class="ai-group-num">A-2</span>
+          <h3>TCO 모델 프로토타입 구축</h3>
+        </div>
+        <table class="ai-table">
+          <thead>
+            <tr>
+              <th style="width:7%">ID</th>
+              <th style="width:30%">Action Item</th>
+              <th style="width:16%">담당</th>
+              <th style="width:7%">우선순위</th>
+              <th style="width:22%">산출물</th>
+              <th style="width:18%">기한 / 비고</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="ai-id">A-2-1</span></td>
+              <td>
+                <div class="ai-task">TCO 수식 코드 구현 (Python)</div>
+                <div class="ai-detail">TC(α) = (1-α)Q×VC_자가 + α·Q×C_JDM + FC_committed + FC_step(α) + Penalty(U) + NRE(α) + Transition(α) 수식을 Python 함수로 구현. 가정 기반 파라미터 사용</div>
+              </td>
+              <td>
+                <span class="owner primary">데이터분석 담당</span>
+              </td>
+              <td><span class="priority p1">P1</span></td>
+              <td>
+                <div class="deliverable"><code>tco_model.py</code><br>함수: calc_tco(alpha, params)</div>
+              </td>
+              <td>D+5일</td>
+            </tr>
+            <tr>
+              <td><span class="ai-id">A-2-2</span></td>
+              <td>
+                <div class="ai-task">그리드 시뮬레이션 (α = 0~100%, 5% 단위)</div>
+                <div class="ai-detail">전환 가능 물량(UHD/FHD/HD)에 대해 α를 변동시키며 TC(α) 및 영업이익 산출. 가정 기반이므로 "방향성 검증"이 목적</div>
+              </td>
+              <td>
+                <span class="owner primary">데이터분석 담당</span>
+              </td>
+              <td><span class="priority p2">P2</span></td>
+              <td>
+                <div class="deliverable"><code>grid_simulation_v0.html</code><br>Interactive U-curve 차트</div>
+              </td>
+              <td>D+7일</td>
+            </tr>
+            <tr>
+              <td><span class="ai-id">A-2-3</span></td>
+              <td>
+                <div class="ai-task">PostgreSQL 스키마 설계 및 Raw Data 적재</div>
+                <div class="ai-detail">원가 Raw Data를 시뮬레이션 엔진이 쿼리할 수 있는 구조로 PostgreSQL에 적재. fact_cost, dim_product, dim_region 테이블 설계</div>
+              </td>
+              <td>
+                <span class="owner primary">데이터분석 담당</span>
+              </td>
+              <td><span class="priority p2">P2</span></td>
+              <td>
+                <div class="deliverable"><code>schema.sql</code> + <code>etl_load.py</code></div>
+              </td>
+              <td>D+7일</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- A-3: Data Request -->
+      <div class="ai-group">
+        <div class="ai-group-header">
+          <span class="ai-group-num">A-3</span>
+          <h3>Phase B 데이터 요청 발송</h3>
+        </div>
+        <table class="ai-table">
+          <thead>
+            <tr>
+              <th style="width:7%">ID</th>
+              <th style="width:30%">Action Item</th>
+              <th style="width:16%">담당</th>
+              <th style="width:7%">우선순위</th>
+              <th style="width:22%">산출물</th>
+              <th style="width:18%">기한 / 비고</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="ai-id">A-3-1</span></td>
+              <td>
+                <div class="ai-task">데이터 요청서 작성 및 발송</div>
+                <div class="ai-detail">9개 추가 필요 데이터에 대한 요청 양식 작성. 항목별 포맷, 기한, 담당 부서 명시. 이메일 + 협업 툴로 동시 발송</div>
+              </td>
+              <td>
+                <span class="owner primary">PM / 기획 담당</span>
+              </td>
+              <td><span class="priority p1">P1</span></td>
+              <td>
+                <div class="deliverable"><code>data_request_form.xlsx</code><br>수신: 7개 부서 (아래 상세)</div>
+              </td>
+              <td>D+2일<br><span style="font-size:11px;color:var(--ink-3)">Phase A 착수 즉시 병행</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Data Request Detail -->
+        <div class="data-spec">
+          <div class="data-spec-header">
+            <span class="ds-icon">📋</span>
+            데이터 요청 상세 — 수신 부서 × 요청 항목
+          </div>
+          <table class="ds-table">
+            <thead>
+              <tr>
+                <th style="width:18%">수신 부서</th>
+                <th style="width:28%">요청 데이터</th>
+                <th style="width:30%">요구 포맷</th>
+                <th style="width:12%">희망 기한</th>
+                <th style="width:12%">우선순위</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>생산기획팀</strong></td>
+                <td>공장별/라인별 Capacity (최대 Capa, 최소 가동률)<br>Step Cost 임계점 (라인 폐쇄 기준 물량)</td>
+                <td><code>factory_id × line_id × max_capa × min_util × step_threshold</code></td>
+                <td>D+14일</td>
+                <td><span class="priority p1">P1</span></td>
+              </tr>
+              <tr>
+                <td><strong>원가팀</strong></td>
+                <td>고정비 회피가능성 분류 (회피가능 / Step / Committed)<br>공장별 고정비 분해 (설비/인건비/유지비)</td>
+                <td><code>cost_item × factory_id × classification × amount</code></td>
+                <td>D+14일</td>
+                <td><span class="priority p1">P1</span></td>
+              </tr>
+              <tr>
+                <td><strong>구매팀</strong></td>
+                <td>JDM 단가 Breakdown (재료비/가공비/마진, SKU별)<br>JDM 벤더별 최대 공급 Capa<br>JDM NRE 조건 (Per-unit vs Lump-sum)</td>
+                <td><code>sku × vendor × material_cost × processing_cost × margin × max_capa × nre_type × nre_amount</code></td>
+                <td>D+14일</td>
+                <td><span class="priority p1">P1</span></td>
+              </tr>
+              <tr>
+                <td><strong>해외영업팀</strong></td>
+                <td>지역 × 제품 JDM 전환 가능 여부 (eligibility flag)</td>
+                <td><code>region × product_group × jdm_eligible(0/1) × reason</code></td>
+                <td>D+10일</td>
+                <td><span class="priority p1">P1</span></td>
+              </tr>
+              <tr>
+                <td><strong>관세팀</strong></td>
+                <td>Route별 적용 관세율<br>역내 생산 필수 지역 목록</td>
+                <td><code>origin × destination × tariff_rate × local_required(0/1)</code></td>
+                <td>D+10일</td>
+                <td><span class="priority p2">P2</span></td>
+              </tr>
+              <tr>
+                <td><strong>물류팀</strong></td>
+                <td>출발지 × 도착지 운임 단가표 (자가공장 / JDM 출발 모두)</td>
+                <td><code>origin × destination × transport_mode × unit_cost</code></td>
+                <td>D+10일</td>
+                <td><span class="priority p2">P2</span></td>
+              </tr>
+              <tr>
+                <td><strong>품질관리팀</strong></td>
+                <td>JDM vs 자가 불량률 비교, A/S 비용 차이</td>
+                <td><code>source_type × defect_rate × avg_as_cost_per_unit</code></td>
+                <td>D+14일</td>
+                <td><span class="priority p2">P2</span></td>
+              </tr>
+              <tr>
+                <td><strong>인사팀</strong></td>
+                <td>유휴인력 전환 비용, 구조조정 Latency (시간차)</td>
+                <td><code>factory_id × headcount × redeployment_cost × latency_months</code></td>
+                <td>D+14일</td>
+                <td><span class="priority p2">P2</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="checklist">
+        <h4>Phase A 완료 체크리스트</h4>
+        <div class="cl-item"><div class="cl-box"></div>Back-testing 완료: JDM vs 자가 원가차이 범위 확인됨</div>
+        <div class="cl-item"><div class="cl-box"></div>가동률 vs 고정비 회귀 분석 완료: Penalty 계수 초기 추정됨</div>
+        <div class="cl-item"><div class="cl-box"></div>TCO 모델 Python 프로토타입 작동 확인</div>
+        <div class="cl-item"><div class="cl-box"></div>그리드 시뮬레이션 v0 실행: U-curve 방향성 확인</div>
+        <div class="cl-item"><div class="cl-box"></div>PostgreSQL 스키마 설계 및 Raw Data 적재 완료</div>
+        <div class="cl-item"><div class="cl-box"></div>7개 부서 데이터 요청서 발송 완료</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PHASE B -->
+  <!-- ============================================================ -->
+  <div class="section-divider">
+    <div class="sd-tag">PHASE B</div>
+    <h2>데이터 수집 및 정밀 모델링</h2>
+  </div>
+
+  <div class="phase phase-b">
+    <div class="phase-header">
+      <span class="phase-badge">PHASE B</span>
+      <h2>유관 부서 데이터 수집 · 고정비 재분류 · 정밀 모델 구축</h2>
+      <span class="phase-period">2~4주 (Phase A 완료 후)</span>
+    </div>
+    <div class="phase-objective">
+      <strong>목표:</strong> 7개 부서로부터 수집된 데이터를 정제·적재하고, 가정 기반 프로토타입을 실제 데이터 기반 정밀 모델로 업그레이드합니다. 
+      고정비 3분류, Piecewise Penalty 함수, Route별 물류비/관세, NRE 조건이 모두 반영된 MILP 모델을 완성합니다.
+    </div>
+    <div class="phase-body">
+
+      <!-- B-1 -->
+      <div class="ai-group">
+        <div class="ai-group-header">
+          <span class="ai-group-num">B-1</span>
+          <h3>수집 데이터 검증 및 정제</h3>
+        </div>
+        <table class="ai-table">
+          <thead>
+            <tr>
+              <th style="width:7%">ID</th>
+              <th style="width:30%">Action Item</th>
+              <th style="width:16%">담당</th>
+              <th style="width:7%">우선순위</th>
+              <th style="width:22%">산출물</th>
+              <th style="width:18%">기한 / 비고</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="ai-id">B-1-1</span></td>
+              <td>
+                <div class="ai-task">수집 데이터 완성도 체크 및 Follow-up</div>
+                <div class="ai-detail">7개 부서 회신 상태 추적. 미회신 항목 독촉. 포맷 불일치 항목 재요청. 부분 회신된 데이터의 커버리지 확인</div>
+              </td>
+              <td>
+                <span class="owner primary">PM / 기획 담당</span>
+              </td>
+              <td><span class="priority p1">P1</span></td>
+              <td>
+                <div class="deliverable"><code>data_collection_tracker.xlsx</code><br>항목별 수신 상태 + 커버리지 %</div>
+              </td>
+              <td>D+14~21일<br><span style="font-size:11px;color:var(--ink-3)">주 2회 상태 업데이트</span></td>
+            </tr>
+            <tr>
+              <td><span class="ai-id">B-1-2</span></td>
+              <td>
+                <div class="ai-task">수집 데이터 정제 및 PostgreSQL 적재</div>
+                <div class="ai-detail">각 부서 회신 데이터를 표준 포맷으로 변환. dim_factory_capa, dim_route_cost, dim_jdm_vendor, fact_fixed_cost_classify 테이블에 적재</div>
+              </td>
+              <td>
+                <span class="owner primary">데이터분석 담당</span>
+              </td>
+              <td><span class="priority p1">P1</span></td>
+              <td>
+                <div class="deliverable"><code>etl_phase_b.py</code><br>정제 로그 + 적재 완료 리포트</div>
+              </td>
+              <td>수신 후 D+3일 이내</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="dep-warn">
+          <span class="dw-icon">⚠</span>
+          <strong>의존관계:</strong> B-1-2는 각 부서의 데이터 회신에 의존합니다. 
+          생산기획팀/원가팀/구매팀의 P1 데이터(Capa, 고정비 분류, JDM 단가)가 미확보 시 Phase B 전체가 지연됩니다. 
+          D+10일까지 미회신 시 임원 에스컬레이션을 권장합니다.
+        </div>
+      </div>
+
+      <!-- B-2 -->
+      <div class="ai-group">
+        <div class="ai-group-header">
+          <span class="ai-group-num">B-2</span>
+          <h3>고정비 3분류 및 Penalty 함수 확정</h3>
+        </div>
+        <table class="ai-table">
+          <thead>
+            <tr>
+              <th style="width:7%">ID</th>
+              <th style="width:30%">Action Item</th>
+              <th style="width:16%">담당</th>
+              <th style="width:7%">우선순위</th>
+              <th style="width:22%">산출물</th>
+              <th style="width:18%">기한 / 비고</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="ai-id">B-2-1</span></td>
+              <td>
+                <div class="ai-task">고정비 항목별 회피가능성 분류 작업</div>
+                <div class="ai-detail">원가팀 회신 데이터와 생산기획팀 Capa 데이터를 결합하여 각 고정비 항목을 완전 회피가능 / Step / Committed로 분류. 공장별로 수행</div>
+              </td>
+              <td>
+                <span class="owner primary">원가분석 담당</span>
+                <span class="owner support">생산기획</span>
+              </td>
+              <td><span class="priority p1">P1</span></td>
+              <td>
+                <div class="deliverable"><code>fc_classification_by_factory.xlsx</code></div>
+              </td>
+              <td>D+21일</td>
+            </tr>
+            <tr>
+              <td><span class="ai-id">B-2-2</span></td>
+              <td>
+                <div class="ai-task">Piecewise Penalty 함수 계수 확정</div>
+                <div class="ai-detail">Phase A 회귀 분석 초기 추정 계수를 실제 Capa/Step Cost 데이터로 보정. 공장별 4구간(80%+/60~80%/40~60%/40%-) 경계값 및 계수(a, b, c) 확정</div>
+              </td>
+              <td>
+                <span class="owner primary">데이터분석 담당</span>
+                <span class="owner support">원가분석</span>
+              </td>
+              <td><span class="priority p1">P1</span></td>
+              <td>
+                <div class="deliverable"><code>penalty_params_by_factory.json</code></div>
+              </td>
+              <td>D+21일</td>
+            </tr>
+            <tr>
+              <td><span class="ai-id">B-2-3</span></td>
+              <td>
+                <div class="ai-task">인력 전환 비용 및 Latency 모델링</div>
+                <div class="ai-detail">인사팀 데이터 기반으로 가동률 하락 후 실제 인건비 감소까지의 시차(월 단위)를 TCO 함수의 Transition(α) 항에 반영</div>
+              </td>
+              <td>
+                <span class="owner primary">원가분석 담당</span>
+                <span class="owner support">인사팀</span>
+              </td>
+              <td><span class="priority p2">P2</span></td>
+              <td>
+                <div class="deliverable">Transition 함수 파라미터<br><code>transition_model.py</code></div>
+              </td>
+              <td>D+24일</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- B-3 -->
+      <div class="ai-group">
+        <div class="ai-group-header">
+          <span class="ai-group-num">B-3</span>
+          <h3>전환 매트릭스 및 Route 비용 구축</h3>
+        </div>
+        <table class="ai-table">
+          <thead>
+            <tr>
+              <th style="width:7%">ID</th>
+              <th style="width:30%">Action Item</th>
+              <th style="width:16%">담당</th>
+              <th style="width:7%">우선순위</th>
+              <th style="width:22%">산출물</th>
+              <th style="width:18%">기한 / 비고</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="ai-id">B-3-1</span></td>
+              <td>
+                <div class="ai-task">전환 가능 매트릭스 완성</div>
+                <div class="ai-detail">해외영업·관세팀 데이터 결합. region × product × jdm_eligible × jdm_vendor_id 형태의 마스터 테이블 완성. JDM 벤더별 Capa 한도 연결</div>
+              </td>
+              <td>
+                <span class="owner primary">PM / 기획 담당</span>
+                <span class="owner support">구매팀</span>
+              </td>
+              <td><span class="priority p1">P1</span></td>
+              <td>
+                <div class="deliverable"><code>dim_eligibility_master.csv</code></div>
+              </td>
+              <td>D+17일</td>
+            </tr>
+            <tr>
+              <td><span class="ai-id">B-3-2</span></td>
+              <td>
+                <div class="ai-task">Route별 물류비 + 관세 매트릭스 구축</div>
+                <div class="ai-detail">물류팀/관세팀 데이터로 origin × destination × unit_logistics_cost × tariff_rate 테이블 구축. 자가공장 출발 vs JDM 출발 모두 포함</div>
+              </td>
+              <td>
+                <span class="owner primary">데이터분석 담당</span>
+              </td>
+              <td><span class="priority p2">P2</span></td>
+              <td>
+                <div class="deliverable"><code>dim_route_cost.csv</code></div>
+              </td>
+              <td>D+17일</td>
+            </tr>
+            <tr>
+              <td><span class="ai-id">B-3-3</span></td>
+              <td>
+                <div class="ai-task">JDM NRE 조건 정리 및 상각 모델링</div>
+                <div class="ai-detail">구매팀 데이터로 SKU별 NRE 지급 조건 정리. Per-unit 상각 vs Lump-sum 방식에 따른 BEP 변동 시뮬레이션 사전 테스트</div>
+              </td>
+              <td>
+                <span class="owner primary">원가분석 담당</span>
+              </td>
+              <td><span class="priority p2">P2</span></td>
+              <td>
+                <div class="deliverable"><code>nre_amortization_model.xlsx</code></div>
+              </td>
+              <td>D+21일</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- B-4 -->
+      <div class="ai-group">
+        <div class="ai-group-header">
+          <span class="ai-group-num">B-4</span>
+          <h3>MILP 최적화 모델 구축</h3>
+        </div>
+        <table class="ai-table">
+          <thead>
+            <tr>
+              <th style="width:7%">ID</th>
+              <th style="width:30%">Action Item</th>
+              <th style="width:16%">담당</th>
+              <th style="width:7%">우선순위</th>
+              <th style="width:22%">산출물</th>
+              <th style="width:18%">기한 / 비고</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="ai-id">B-4-1</span></td>
+              <td>
+                <div class="ai-task">MILP 모델 코딩 (PuLP)</div>
+                <div class="ai-detail">목적함수(영업이익 최대화), 결정변수(SKU×지역별 α), 제약조건(전환 매트릭스, JDM Capa, Step Cost 정수변수) 구현. Phase A 프로토타입을 확장</div>
+              </td>
+              <td>
+                <span class="owner primary">데이터분석 담당</span>
+              </td>
+              <td><span class="priority p1">P1</span></td>
+              <td>
+                <div class="deliverable"><code>milp_optimizer.py</code><br>PuLP + CBC solver</div>
+              </td>
+              <td>D+28일</td>
+            </tr>
+            <tr>
+              <td><span class="ai-id">B-4-2</span></td>
+              <td>
+                <div class="ai-task">Monte Carlo 시뮬레이션 엔진 구축</div>
+                <div class="ai-detail">ASP, 환율, 물류비, 수요를 확률 변수로 정의(정규/삼각 분포). 최적화를 5,000회 반복 실행하여 α의 확률 분포 산출</div>
+              </td>
+              <td>
+                <span class="owner primary">데이터분석 담당</span>
+              </td>
+              <td><span class="priority p2">P2</span></td>
+              <td>
+                <div class="deliverable"><code>monte_carlo_engine.py</code><br>신뢰구간 리포트 함수 포함</div>
+              </td>
+              <td>D+28일</td>
+            </tr>
+            <tr>
+              <td><span class="ai-id">B-4-3</span></td>
+              <td>
+                <div class="ai-task">단위 테스트 및 Sanity Check</div>
+                <div class="ai-detail">극단 케이스(α=0%, α=100%) 검증. 알려진 실적과 비교. 모델 출력이 상식적 범위 내인지 확인. 원가팀과 Cross-check</div>
+              </td>
+              <td>
+                <span class="owner primary">데이터분석 담당</span>
+                <span class="owner support">원가분석</span>
+              </td>
+              <td><span class="priority p1">P1</span></td>
+              <td>
+                <div class="deliverable"><code>test_results.md</code><br>검증 항목별 Pass/Fail</div>
+              </td>
+              <td>D+30일</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="checklist">
+        <h4>Phase B 완료 체크리스트</h4>
+        <div class="cl-item"><div class="cl-box"></div>7개 부서 데이터 수집 완료 (최소 P1 항목 전량)</div>
+        <div class="cl-item"><div class="cl-box"></div>고정비 3분류 완료 (공장별)</div>
+        <div class="cl-item"><div class="cl-box"></div>Piecewise Penalty 계수 확정 (공장별)</div>
+        <div class="cl-item"><div class="cl-box"></div>전환 가능 매트릭스 + JDM Capa 한도 완성</div>
+        <div class="cl-item"><div class="cl-box"></div>Route별 물류비/관세 테이블 적재</div>
+        <div class="cl-item"><div class="cl-box"></div>MILP 모델 코딩 완료 + Sanity Check 통과</div>
+        <div class="cl-item"><div class="cl-box"></div>Monte Carlo 엔진 구축 완료</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PHASE C -->
+  <!-- ============================================================ -->
+  <div class="section-divider">
+    <div class="sd-tag">PHASE C</div>
+    <h2>시뮬레이션 실행 및 검증</h2>
+  </div>
+
+  <div class="phase phase-c">
+    <div class="phase-header">
+      <span class="phase-badge">PHASE C</span>
+      <h2>최적화 실행 · 임계점 도출 · 대시보드 구축 · 경영진 보고</h2>
+      <span class="phase-period">1~2주 (Phase B 완료 후)</span>
+    </div>
+    <div class="phase-objective">
+      <strong>목표:</strong> 정밀 모델로 MILP 최적화를 실행하여 공장×SKU별 최적 JDM 비중을 산출하고, 
+      Critical Threshold를 도출합니다. Monte Carlo로 신뢰구간을 확보한 후 Interactive 대시보드를 구축하여 경영진에 보고합니다.
+    </div>
+    <div class="phase-body">
+
+      <!-- C-1 -->
+      <div class="ai-group">
+        <div class="ai-group-header">
+          <span class="ai-group-num">C-1</span>
+          <h3>MILP 최적화 실행</h3>
+        </div>
+        <table class="ai-table">
+          <thead>
+            <tr>
+              <th style="width:7%">ID</th>
+              <th style="width:30%">Action Item</th>
+              <th style="width:16%">담당</th>
+              <th style="width:7%">우선순위</th>
+              <th style="width:22%">산출물</th>
+              <th style="width:18%">기한 / 비고</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="ai-id">C-1-1</span></td>
+              <td>
+                <div class="ai-task">Base 시나리오 최적화 실행</div>
+                <div class="ai-detail">현재 수요 전망 기준으로 MILP solver 실행. 공장×SKU×지역별 최적 α 산출. 결과: 총 영업이익, 공장별 가동률, JDM 배분 물량</div>
+              </td>
+              <td><span class="owner primary">데이터분석 담당</span></td>
+              <td><span class="priority p1">P1</span></td>
+              <td><div class="deliverable"><code>optimal_alpha_base.csv</code></div></td>
+              <td>D+35일</td>
+            </tr>
+            <tr>
+              <td><span class="ai-id">C-1-2</span></td>
+              <td>
+                <div class="ai-task">수요 시나리오별 최적화 (Low / High)</div>
+                <div class="ai-detail">수요 ±15~20% 변동 시나리오에서 최적 α가 어떻게 이동하는지 산출. 수요 하락 시 Penalty 급증 패턴 확인</div>
+              </td>
+              <td><span class="owner primary">데이터분석 담당</span></td>
+              <td><span class="priority p1">P1</span></td>
+              <td><div class="deliverable"><code>optimal_alpha_scenarios.csv</code></div></td>
+              <td>D+36일</td>
+            </tr>
+            <tr>
+              <td><span class="ai-id">C-1-3</span></td>
+              <td>
+                <div class="ai-task">Critical Threshold 도출 (공장별)</div>
+                <div class="ai-detail">각 공장의 가동률을 극단까지 낮추며 "구조적 손실 진입점"을 탐색. 절대 하회 불가 가동률 임계점을 공장별로 산출</div>
+              </td>
+              <td><span class="owner primary">데이터분석 담당</span></td>
+              <td><span class="priority p1">P1</span></td>
+              <td><div class="deliverable"><code>critical_threshold_map.csv</code><br>공장별 min_utilization</div></td>
+              <td>D+36일</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- C-2 -->
+      <div class="ai-group">
+        <div class="ai-group-header">
+          <span class="ai-group-num">C-2</span>
+          <h3>Monte Carlo 시뮬레이션 및 민감도 분석</h3>
+        </div>
+        <table class="ai-table">
+          <thead>
+            <tr>
+              <th style="width:7%">ID</th>
+              <th style="width:30%">Action Item</th>
+              <th style="width:16%">담당</th>
+              <th style="width:7%">우선순위</th>
+              <th style="width:22%">산출물</th>
+              <th style="width:18%">기한 / 비고</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="ai-id">C-2-1</span></td>
+              <td>
+                <div class="ai-task">Monte Carlo 5,000회 실행</div>
+                <div class="ai-detail">ASP(±5%), 환율(±10%), 물류비(±15%), 수요(±20%)를 확률 변수로 놓고 반복 실행. 최적 α의 확률 분포(히스토그램) 및 95% 신뢰구간 산출</div>
+              </td>
+              <td><span class="owner primary">데이터분석 담당</span></td>
+              <td><span class="priority p2">P2</span></td>
+              <td><div class="deliverable"><code>mc_results.json</code><br>α 분포 + 신뢰구간</div></td>
+              <td>D+38일</td>
+            </tr>
+            <tr>
+              <td><span class="ai-id">C-2-2</span></td>
+              <td>
+                <div class="ai-task">Tornado Chart (민감도 순위)</div>
+                <div class="ai-detail">어떤 변수가 최적 α에 가장 큰 영향을 미치는지 순위 산출. Tornado 차트로 시각화. 경영진에게 "어디를 관리해야 하는지" 제시</div>
+              </td>
+              <td><span class="owner primary">데이터분석 담당</span></td>
+              <td><span class="priority p2">P2</span></td>
+              <td><div class="deliverable">Tornado Chart (HTML)</div></td>
+              <td>D+38일</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- C-3 -->
+      <div class="ai-group">
+        <div class="ai-group-header">
+          <span class="ai-group-num">C-3</span>
+          <h3>Interactive 대시보드 구축 및 경영진 보고</h3>
+        </div>
+        <table class="ai-table">
+          <thead>
+            <tr>
+              <th style="width:7%">ID</th>
+              <th style="width:30%">Action Item</th>
+              <th style="width:16%">담당</th>
+              <th style="width:7%">우선순위</th>
+              <th style="width:22%">산출물</th>
+              <th style="width:18%">기한 / 비고</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="ai-id">C-3-1</span></td>
+              <td>
+                <div class="ai-task">Interactive HTML 대시보드 개발</div>
+                <div class="ai-detail">슬라이더로 α 조절 → 실시간 총비용/영업이익 변화. 공장별 Penalty 곡선, Monte Carlo 히스토그램, Critical Threshold 표시. 시나리오 토글 (Low/Base/High)</div>
+              </td>
+              <td><span class="owner primary">데이터분석 담당</span></td>
+              <td><span class="priority p1">P1</span></td>
+              <td><div class="deliverable"><code>jdm_dashboard.html</code></div></td>
+              <td>D+42일</td>
+            </tr>
+            <tr>
+              <td><span class="ai-id">C-3-2</span></td>
+              <td>
+                <div class="ai-task">경영진 보고 자료 작성</div>
+                <div class="ai-detail">Executive Summary 2장 + 대시보드 데모. 핵심 메시지: 최적 α, Critical Threshold, 95% 신뢰구간, 실행 로드맵</div>
+              </td>
+              <td>
+                <span class="owner primary">PM / 기획 담당</span>
+                <span class="owner support">데이터분석</span>
+              </td>
+              <td><span class="priority p1">P1</span></td>
+              <td><div class="deliverable"><code>exec_report_jdm.pptx</code><br>2~3장 + 대시보드 링크</div></td>
+              <td>D+44일</td>
+            </tr>
+            <tr>
+              <td><span class="ai-id">C-3-3</span></td>
+              <td>
+                <div class="ai-task">실무 부서 리뷰 및 피드백 반영</div>
+                <div class="ai-detail">생산기획·구매·원가팀과 결과 리뷰 미팅. 모델 가정이나 데이터 오류 지적 사항 보정. 최종 결과 확정</div>
+              </td>
+              <td>
+                <span class="owner primary">PM / 기획 담당</span>
+              </td>
+              <td><span class="priority p2">P2</span></td>
+              <td><div class="deliverable">리뷰 회의록 + 보정 내역</div></td>
+              <td>D+46일</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="checklist">
+        <h4>Phase C 완료 체크리스트</h4>
+        <div class="cl-item"><div class="cl-box"></div>Base/Low/High 시나리오 최적 α 산출 완료</div>
+        <div class="cl-item"><div class="cl-box"></div>Critical Threshold 공장별 도출 완료</div>
+        <div class="cl-item"><div class="cl-box"></div>Monte Carlo 신뢰구간 산출 완료</div>
+        <div class="cl-item"><div class="cl-box"></div>Interactive 대시보드 작동 확인</div>
+        <div class="cl-item"><div class="cl-box"></div>실무 부서 리뷰 완료 및 보정 반영</div>
+        <div class="cl-item"><div class="cl-box"></div>경영진 보고 완료</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PHASE D -->
+  <!-- ============================================================ -->
+  <div class="section-divider">
+    <div class="sd-tag">PHASE D</div>
+    <h2>의사결정 및 상시 모니터링</h2>
+  </div>
+
+  <div class="phase phase-d">
+    <div class="phase-header">
+      <span class="phase-badge">PHASE D</span>
+      <h2>실행 전환 · 월별 검증 · 자동 재시뮬레이션 체계</h2>
+      <span class="phase-period">상시 운영</span>
+    </div>
+    <div class="phase-objective">
+      <strong>목표:</strong> 경영진 의사결정 후 단계적으로 JDM 전환을 실행하고, 
+      월별 실적 대비 시뮬레이션 결과를 검증합니다. 변수 변동 시 자동으로 재시뮬레이션하는 운영 체계를 구축합니다.
+    </div>
+    <div class="phase-body">
+
+      <div class="ai-group">
+        <div class="ai-group-header">
+          <span class="ai-group-num">D-1</span>
+          <h3>단계적 실행 및 모니터링</h3>
+        </div>
+        <table class="ai-table">
+          <thead>
+            <tr>
+              <th style="width:7%">ID</th>
+              <th style="width:30%">Action Item</th>
+              <th style="width:16%">담당</th>
+              <th style="width:7%">우선순위</th>
+              <th style="width:22%">산출물</th>
+              <th style="width:18%">기한 / 비고</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="ai-id">D-1-1</span></td>
+              <td>
+                <div class="ai-task">1차 전환 대상 확정 (Quick Win)</div>
+                <div class="ai-detail">BEP를 크게 상회하고 리스크가 낮은 조합(높은 절감액 + 낮은 Penalty) 우선 선정. 소량부터 시범 전환</div>
+              </td>
+              <td>
+                <span class="owner primary">PM / 기획 담당</span>
+                <span class="owner support">구매팀</span>
+              </td>
+              <td><span class="priority p1">P1</span></td>
+              <td><div class="deliverable">1차 전환 대상 목록 + 물량 계획</div></td>
+              <td>경영진 결정 후 D+7일</td>
+            </tr>
+            <tr>
+              <td><span class="ai-id">D-1-2</span></td>
+              <td>
+                <div class="ai-task">월별 실적 vs 시뮬레이션 검증 자동화</div>
+                <div class="ai-detail">n8n 워크플로우로 월별 실적 데이터를 자동 수집하여 시뮬레이션 예측치와 비교. 괴리율이 ±10% 초과 시 알림 발송</div>
+              </td>
+              <td><span class="owner primary">데이터분석 담당</span></td>
+              <td><span class="priority p2">P2</span></td>
+              <td><div class="deliverable"><code>n8n_monthly_validation.json</code><br>자동 리포트 + 알림</div></td>
+              <td>상시</td>
+            </tr>
+            <tr>
+              <td><span class="ai-id">D-1-3</span></td>
+              <td>
+                <div class="ai-task">변수 변동 시 자동 재시뮬레이션</div>
+                <div class="ai-detail">환율, JDM 단가, 수요 전망 변동 시 MILP 최적화를 자동 재실행하여 최적 α 업데이트. n8n 트리거 + Python 스크립트 연동</div>
+              </td>
+              <td><span class="owner primary">데이터분석 담당</span></td>
+              <td><span class="priority p2">P2</span></td>
+              <td><div class="deliverable"><code>n8n_auto_resim.json</code></div></td>
+              <td>상시</td>
+            </tr>
+            <tr>
+              <td><span class="ai-id">D-1-4</span></td>
+              <td>
+                <div class="ai-task">분기별 모델 리캘리브레이션</div>
+                <div class="ai-detail">분기마다 Penalty 계수, NRE 상각, Route 비용 등 주요 파라미터를 실적 기반으로 재보정. 모델 정확도 지속 향상</div>
+              </td>
+              <td>
+                <span class="owner primary">원가분석 담당</span>
+                <span class="owner support">데이터분석</span>
+              </td>
+              <td><span class="priority p3">P3</span></td>
+              <td><div class="deliverable">분기 리캘리브레이션 리포트</div></td>
+              <td>매 분기</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="checklist">
+        <h4>Phase D 운영 체크리스트 (분기별)</h4>
+        <div class="cl-item"><div class="cl-box"></div>월별 실적 vs 시뮬레이션 괴리율 ±10% 이내 유지</div>
+        <div class="cl-item"><div class="cl-box"></div>모든 공장 가동률이 Critical Threshold 상회</div>
+        <div class="cl-item"><div class="cl-box"></div>변수 변동 시 재시뮬레이션 자동 실행 확인</div>
+        <div class="cl-item"><div class="cl-box"></div>분기별 파라미터 리캘리브레이션 완료</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- RISK MATRIX -->
+  <!-- ============================================================ -->
+  <div class="section-divider">
+    <div class="sd-tag">APPENDIX</div>
+    <h2>리스크 매트릭스</h2>
+  </div>
+
+  <div class="risk-matrix">
+    <table class="rm-table">
+      <thead>
+        <tr>
+          <th style="width:6%">ID</th>
+          <th style="width:22%">리스크 항목</th>
+          <th style="width:8%">등급</th>
+          <th style="width:32%">영향</th>
+          <th style="width:32%">대응 방안</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="ai-id">R-01</span></td>
+          <td><strong>P1 데이터 미확보</strong><br><span style="font-size:11px;color:var(--ink-3)">생산기획/원가/구매팀</span></td>
+          <td><span class="risk-tag high">HIGH</span></td>
+          <td>Phase B 전체 지연. 가정 기반 시뮬레이션만 가능하여 경영진 신뢰도 하락</td>
+          <td>D+10일 미회신 시 임원 에스컬레이션. 최소 범위(상위 SKU 10개)로 축소 실행 후 확대</td>
+        </tr>
+        <tr>
+          <td><span class="ai-id">R-02</span></td>
+          <td><strong>고정비 분류 주관성</strong><br><span style="font-size:11px;color:var(--ink-3)">원가팀 판단 의존</span></td>
+          <td><span class="risk-tag high">HIGH</span></td>
+          <td>분류 기준이 불명확하면 BEP 산출 신뢰도 저하. 같은 항목을 다른 공장이 다르게 분류할 수 있음</td>
+          <td>분류 기준서(Guideline) 사전 작성 → 원가팀과 합의 → 통일 적용. Cross-check 워크숍 1회</td>
+        </tr>
+        <tr>
+          <td><span class="ai-id">R-03</span></td>
+          <td><strong>JDM 벤더 Capa 불확실성</strong><br><span style="font-size:11px;color:var(--ink-3)">실제 vs 공칭 차이</span></td>
+          <td><span class="risk-tag mid">MID</span></td>
+          <td>최적 α 산출 후 JDM이 실제 소화 못하면 계획 차질</td>
+          <td>JDM Capa에 80% 안전계수 적용. 복수 벤더 배정으로 집중 리스크 분산</td>
+        </tr>
+        <tr>
+          <td><span class="ai-id">R-04</span></td>
+          <td><strong>Penalty 계수 추정 오차</strong><br><span style="font-size:11px;color:var(--ink-3)">과거 데이터 불충분</span></td>
+          <td><span class="risk-tag mid">MID</span></td>
+          <td>가동률-비용 관계의 실제 곡선과 모델 곡선 괴리 → 최적 α 부정확</td>
+          <td>Monte Carlo로 계수 불확실성 흡수. 보수적 구간(±20%)으로 민감도 분석. 실행 후 분기별 리캘리브레이션</td>
+        </tr>
+        <tr>
+          <td><span class="ai-id">R-05</span></td>
+          <td><strong>수요 급변</strong><br><span style="font-size:11px;color:var(--ink-3)">경기 침체 등 외부 요인</span></td>
+          <td><span class="risk-tag mid">MID</span></td>
+          <td>수요 급감 시 자가공장 가동률이 Critical Threshold 이하로 하락 가능</td>
+          <td>수요 시나리오별 최적 α를 사전 산출. 수요 모니터링 → n8n 자동 재시뮬레이션 트리거</td>
+        </tr>
+        <tr>
+          <td><span class="ai-id">R-06</span></td>
+          <td><strong>인력 전환 Latency</strong><br><span style="font-size:11px;color:var(--ink-3)">노사 이슈, 법적 제약</span></td>
+          <td><span class="risk-tag low">LOW</span></td>
+          <td>모델에서 인건비 즉시 감소를 가정하면 실제 손익과 괴리</td>
+          <td>Transition(α) 항에 3~6개월 Latency 반영. 보수적 가정으로 모델링</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note-block" style="margin-top:24px;">
+    <strong>전체 프로젝트 성공 기준:</strong>
+    ① MILP 최적화 결과의 영업이익이 현행 대비 개선 ② 모든 공장 가동률이 Critical Threshold 상회 
+    ③ Monte Carlo 95% 신뢰구간이 의사결정에 충분히 좁음 (α 범위 20%p 이내) 
+    ④ 월별 실적 vs 시뮬레이션 괴리율 ±10% 이내
+  </div>
+
+  <div class="footer">
+    TV사업부 · JDM 비중 최적화 실무 Action Plan v1.0 · WORKING DOCUMENT · CONFIDENTIAL
+  </div>
+
+</div>
+</body>
+</html>
