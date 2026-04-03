@@ -584,6 +584,14 @@
     <ul>
       <li>다년간(2~3년) 월별 데이터 → 시계열 변동 관측 가능 <span class="tag tag-red">실제 1년치만 가용</span></li>
       <li>판매법인별 데이터 → 횡단면 비교 가능 <span class="tag tag-green">확인 (보유)</span></li>
+
+      <!-- 횡단면 비교 설명 -->
+      <div style="background:var(--bg-warm); border-radius:4px; padding:10px 14px; margin:8px 0 4px; font-size:13.5px; line-height:1.7;">
+        <strong style="color:var(--info);">횡단면 비교란?</strong><br>
+        같은 시점(2025년)에 <strong>서로 다른 판매법인들을 나란히 놓고 비교</strong>하는 것입니다. "인도는 JDM 80%인데 고정비가 이 정도이고, 구주는 JDM 2%인데 고정비가 이 정도다" — 이런 비교입니다.<br>
+        반대로 <strong>시계열 비교</strong>는 한 법인을 여러 해에 걸쳐 추적하는 것으로, 다년간 데이터가 필요합니다.<br>
+        비유하면 시계열은 <em>한 사람의 건강검진을 매년 비교</em>하는 것이고, 횡단면은 <em>같은 날 검진 받은 여러 사람의 결과를 비교</em>하는 것입니다.
+      </div>
       <li>Plant(공장) 데이터 확보 가능 → 공장별 가동률 산출 <span class="tag tag-red">부재</span></li>
       <li>Capacity 정보 → 설비 유휴율 직접 계산 <span class="tag tag-red">부재</span></li>
     </ul>
@@ -756,6 +764,37 @@
         </tr>
       </tbody>
     </table>
+  </div>
+
+  <!-- 5-2: C그룹 추정 불가 이유 -->
+  <div class="method-box" style="border-left:3px solid var(--danger); margin-top:20px;">
+    <h4 style="color:var(--danger);">왜 C그룹은 데이터로 추정할 수 없는가?</h4>
+    <p style="margin-top:10px;">γ를 데이터로 추정하려면 <strong>"자가 물량을 의도적으로 크게 줄여본 적"</strong>이 있어야 합니다. 줄였을 때 고정비가 실제로 얼마나 따라 줄었는지를 관측해야 하기 때문입니다.</p>
+    <p>현재 데이터의 월별 물량 변동은 <strong>계절성(성수기/비수기)</strong>이지 JDM 전환이 아닙니다. 공장 입장에서 이 범위는 정상 운영이므로, 인력 해고도 설비 폐쇄도 일어나지 않습니다. 회귀를 돌려도 "잔업수당이 조금 변하는 패턴"만 나올 뿐, "물량을 구조적으로 30% 빼면 인건비가 얼마나 남는가"에 대한 답은 나오지 않습니다.</p>
+    <div class="analogy">비유: "직원을 절반으로 줄이면 사무실 임대료가 얼마나 줄어드는가"를 알고 싶은데, 데이터는 직원 수가 95~105명 사이에서 오르내린 12개월 기록뿐입니다. 이 미세 변동으로 "50명일 때"를 추정하는 것은 불가능합니다.</div>
+    <p style="margin-top:12px; font-size:13.5px; color:var(--ink-light);">데이터의 <strong>양</strong>이 아니라 데이터 안에 담긴 <strong>변동의 성격</strong>이 문제입니다. 이것이 γ를 "추정"이 아닌 "시나리오 가정"으로 처리하는 이유입니다.</p>
+  </div>
+
+  <!-- 원가 배부 기준 리스크 -->
+  <div class="method-box" style="border-left:3px solid var(--caution); margin-top:20px;">
+    <h4 style="color:var(--caution);">주의: 원가 데이터 자체의 배부 기준 리스크</h4>
+    <p style="margin-top:10px;">위 A/B/C/D 분류는 비용 항목의 <strong>경제적 성격</strong>으로 나눈 것입니다. 그러나 DB에 들어있는 숫자는 <strong>회계 담당자의 배부 처리 결과</strong>이고, 이 둘이 항상 일치하지 않습니다.</p>
+
+    <p style="margin-top:12px; font-weight:600;">구체적 사례:</p>
+    <div style="background:var(--bg-warm); border-radius:4px; padding:14px 16px; margin:8px 0; font-size:14px; line-height:1.8;">
+      <strong>사례 1 — 제조경비의 이중 성격</strong><br>
+      현재 B그룹으로 분류했지만, 실제로는 전력비(물량 연동)와 공장 보험료(고정)가 섞여 있습니다. 회계 담당자가 이 둘을 어떤 비율로 제조경비에 묶었느냐에 따라 B그룹 절감액이 과대 또는 과소 추정됩니다.
+    </div>
+    <div style="background:var(--bg-warm); border-radius:4px; padding:14px 16px; margin:8px 0; font-size:14px; line-height:1.8;">
+      <strong>사례 2 — O/H 배부 기준</strong><br>
+      본사 간접비를 제품별로 나누는 기준이 매출액 기준인지 수량 기준인지에 따라 같은 공장의 O/H가 완전히 달라집니다. JDM 행의 O/H가 자가보다 낮게 나와도, <strong>실제로 낮은 건지, 배부 공식이 그렇게 만든 건지</strong> 구분이 안 됩니다.
+    </div>
+    <div style="background:var(--bg-warm); border-radius:4px; padding:14px 16px; margin:8px 0; font-size:14px; line-height:1.8;">
+      <strong>사례 3 — 인건비의 범위</strong><br>
+      공장 직접 인력과 본사 지원 인력이 모두 인건비에 포함되면 C그룹이 부풀고, 본사 인력이 판관비(D그룹)에 들어가 있으면 C그룹이 작아집니다. C그룹 크기가 달라지면 <strong>최적 JDM 비중 자체가 달라집니다.</strong>
+    </div>
+
+    <p style="margin-top:12px;"><strong>대응:</strong> 원가팀에 O/H·제조경비의 배부 기준을 확인하고, 배부 성격이 강한 항목의 JDM/자가 차이가 크게 나오면 교차 검증을 수행합니다. 이 불확실성은 γ 시나리오의 보수~공격 범위가 일부 흡수합니다.</p>
   </div>
 
   <!-- 5-2: 고정비 모델링 -->
@@ -953,6 +992,21 @@
     </table>
   </div>
 
+  <!-- Step 6 횡단면 검증 보충 설명 -->
+  <div class="method-box" style="border-left:3px solid var(--info); margin-top:20px;">
+    <h4 style="color:var(--info);">Step 6. 횡단면 검증을 하는 이유</h4>
+    <div class="method-subtitle">γ 시나리오가 허공에서 나온 게 아니라는 근거 확보</div>
+    <p>γ를 보수 0.10, 기준 0.20, 공격 0.35로 놓았을 때, <strong>"왜 0.20인가? 0.50이면 안 되는가?"</strong>라는 질문에 현재로서는 제조업 일반론 외에 답이 없습니다.</p>
+    <p>횡단면 비교는 이 질문에 대한 <strong>유일하게 데이터에서 뽑을 수 있는 간접 근거</strong>입니다. 인도(JDM 80%)의 자가공장 단위 고정비가, JDM을 거의 안 하는 구주(JDM 2%)보다 월등히 높다면 — 그건 "물량을 빼도 고정비가 안 줄어서, 남은 물량이 떠안고 있다"는 실증입니다. 이 경우 γ는 0.10~0.15 쪽이 현실적이라는 <strong>방향 감각</strong>이 생깁니다.</p>
+    <p>반대로 별 차이가 없다면, 고정비가 어느 정도 조정되고 있다는 뜻이므로 γ를 0.25~0.30으로 잡아도 됩니다.</p>
+
+    <div class="callout caution" style="margin-top:14px; padding:14px 18px;">
+      <div class="callout-title">솔직한 한계</div>
+      <p>인도와 구주는 공장 규모, 인건비 수준, 제품 믹스, 노동법이 전부 다릅니다. 인도의 단위 고정비가 높다고 해서 "JDM 때문인지, 인도 공장 자체 특성인지" 구분이 안 됩니다. 이것은 인과관계가 아니라 상관 패턴이므로 <strong>의사결정의 핵심 근거가 아닌 보조 근거(Proxy)</strong>로만 사용합니다.</p>
+    </div>
+    <p style="margin-top:10px; font-size:13.5px; color:var(--ink-light);">결론: 횡단면 비교가 없으면 γ는 순수 가정이고, 있으면 불완전하지만 데이터에서 나온 방향 감각이 하나 붙습니다. 완벽한 답은 아니지만 아예 없는 것보다는 낫습니다.</p>
+  </div>
+
   <div class="formula-box" style="text-align: left; font-size: 13px; line-height: 2.2;">
     <strong>목적함수:</strong><br>
     ΔOP = Σ(자가수량<sub>i</sub> × 전환비중<sub>i</sub> × A절감액<sub>i</sub>)&nbsp;&nbsp;&nbsp;← 실측<br>
@@ -1058,6 +1112,7 @@
       <li><strong>"γ=0.20이 정말 맞는가?"</strong> → γ는 추정이 아니라 가정입니다. 보수~공격 구간을 제시할 뿐, 정답은 공장 운영 실무 판단에 의존합니다.</li>
       <li><strong>"공장 A는 줄이고 공장 B는 유지해야 하는가?"</strong> → Plant 데이터가 없어 공장 단위 의사결정은 불가합니다.</li>
       <li><strong>"가동률 50% 이하에서 고정비가 급등하는가?"</strong> → Capacity 데이터 없이 임계점 분석은 불가합니다.</li>
+      <li><strong>"비용 항목별 수치가 정확한가?"</strong> → 원가 데이터는 회계 담당자의 배부 기준에 따라 달라질 수 있습니다. 특히 O/H, 제조경비, 인건비의 배부 로직에 따라 A/B/C그룹 경계가 흔들릴 수 있으며, 이는 최적 비중 산출에 직접 영향을 줍니다. (상세: Section 05-1 참조)</li>
     </ul>
   </div>
 
